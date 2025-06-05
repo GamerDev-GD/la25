@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spline 3D Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #000;
+      -webkit-touch-callout: none; /* Disable callout, copy menu on iOS */
+      -webkit-user-select: none; /* Disable selection on iOS */
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      overflow-x: hidden;
+    }
+    spline-viewer {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.2/build/spline-viewer.js"></script>
+  <script>
+    // Disable right-click context menu
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+
+    // Disable keyboard shortcuts for inspect and view source
+    document.addEventListener('keydown', function(e) {
+      // F12
+      if (e.key === 'F12') {
+        e.preventDefault();
+      }
+      // Ctrl+Shift+I or Cmd+Option+I
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'i') {
+        e.preventDefault();
+      }
+      // Ctrl+Shift+J or Cmd+Option+J
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'j') {
+        e.preventDefault();
+      }
+      // Ctrl+U or Cmd+U (view source)
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'u') {
+        e.preventDefault();
+      }
+      // Ctrl+S or Cmd+S (save page)
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+      }
+      // Ctrl+Shift+C or Cmd+Option+C (inspect element)
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+      }
+      // Print Screen key detection
+      if (e.key === 'PrintScreen') {
+        e.preventDefault();
+        blurContentTemporarily();
+        clearClipboard();
+      }
+    });
+
+    // On mobile, when user touches the screen, type the letter "e"
+    document.addEventListener('touchstart', function(e) {
+      const inputEvent = new InputEvent('input', {
+        bubbles: true,
+        cancelable: true,
+        data: 'e',
+        inputType: 'insertText',
+      });
+      const activeElement = document.activeElement;
+      if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+        activeElement.value += 'e';
+        activeElement.dispatchEvent(inputEvent);
+      } else {
+        // If no input is focused, create a temporary input to show the letter "e" typed
+        const tempInput = document.createElement('input');
+        tempInput.style.position = 'fixed';
+        tempInput.style.opacity = '0';
+        document.body.appendChild(tempInput);
+        tempInput.focus();
+        tempInput.value = 'e';
+        tempInput.dispatchEvent(inputEvent);
+        setTimeout(() => {
+          document.body.removeChild(tempInput);
+        }, 100);
+      }
+    });
+
+    function blurContentTemporarily() {
+      document.body.style.filter = 'blur(8px)';
+      setTimeout(() => {
+        document.body.style.filter = '';
+      }, 2000);
+    }
+
+    function clearClipboard() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText('');
+      }
+    }
+  </script>
+</head>
+<body>
+  <spline-viewer url="https://prod.spline.design/ObotDgPTVbeuHat6/scene.splinecode"></spline-viewer>
+</body>
+</html>
